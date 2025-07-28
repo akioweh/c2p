@@ -1,0 +1,55 @@
+[tool.pylsp-mypy]
+enabled = true
+live_mode = true
+
+
+[tool.basedpyright]
+
+typeCheckingMode = "recommended"
+
+reportUnusedCallResult = false
+
+reportConstantRedefinition = false
+
+# reportGeneralTypeIssues = false
+# reportOptionalMemberAccess = false
+# reportOptionalSubscript = false
+# reportPrivateUsage = false
+# reportUnknownMemberType = false
+# reportUnknownParameterType = false
+# reportUnknownVariableType = false
+# reportUntypedFunctionDecorator = false
+# reportUntypedClassDecorator = false
+
+# pythonVersion = "3.10"
+
+# strictListInference = true
+# strictSetInference = true
+# strictDictionaryInference = true
+# enableReachabilityAnalysis = true
+
+
+[tool.ruff]
+
+line-length = 120
+# target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F"]
+
+ignore = [
+  "E402", # Module level import not at top of file
+  "E501", # Line too long
+  "E741", # ambiguous variable name
+  "N",    # naming convention
+]
+
+# unfixable = ["F401", "F841"]
+
+# Allow single-letter and short variable names
+# dummy-variable-rgx = "^(_+|[a-zA-Z]|[a-zA-Z][0-9]*)$"
+
+[tool.ruff.format]
+quote-style = "single"
+indent-style = "space"
+skip-magic-trailing-comma = true
