@@ -48,6 +48,36 @@ def topo_sort_dfs(graph: dict[int, list[int]], source: int) -> list[int]:
     return res
 
 
+def topo_sort(graph: list[list[int]]) -> list[int]:
+    """Generalized Topological Sort,
+    iterative implementation.
+    """
+    n = len(graph)
+    visited = [False] * n
+    res = []
+
+    def postorder(u: int):
+        stack = [(u, 0)]
+        while stack:
+            u, idx = stack[-1]
+            visited[u] = True
+            if idx < len(graph[u]):
+                v = graph[u][idx]
+                stack[-1] = (u, idx + 1)
+                if not visited[v]:
+                    stack.append((v, 0))
+            else:
+                res.append(u)
+                stack.pop()
+
+    for i in range(n):
+        if visited[i]:
+            continue
+        postorder(i)
+    res.reverse()
+    return res
+
+
 def topo_unique(graph: dict[int, list[int]]) -> bool:
     """Checks whether the topological sort of a DAG is unique.
 
