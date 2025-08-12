@@ -6,15 +6,13 @@ def topo_sort_kahn(graph: dict[int, list[int]]) -> list[int]:
     """Kahn's Topological Sort Algorithm,
     (de)queue-based implementation.
 
-    Assumes the graph a DAG.
+    Assumes the graph is acyclic.
     """
-    in_degree = defaultdict(int)
+    in_degree: dict[int, int] = defaultdict(int)
     for u in graph:
         for v in graph[u]:
             in_degree[v] += 1
 
-    # we only need a regular queue,
-    # but the stdlib queue is a deque
     q = deque(filterfalse(in_degree.__getitem__, graph))
     res = []
     while q:
@@ -30,9 +28,10 @@ def topo_sort_kahn(graph: dict[int, list[int]]) -> list[int]:
 
 def topo_sort_dfs(graph: dict[int, list[int]], source: int) -> list[int]:
     """Generalized Topological Sort,
-    the reverse post-order DFS traversal.
-    """
+    aka. reverse post-order.
 
+    Graph may be cyclic.
+    """
     visited = set()
     res = []
 
@@ -49,30 +48,30 @@ def topo_sort_dfs(graph: dict[int, list[int]], source: int) -> list[int]:
     return res
 
 
-def unique_topo(graph: dict[int, list[int]]) -> bool:
+def topo_unique(graph: dict[int, list[int]]) -> bool:
     """Checks whether the topological sort of a DAG is unique.
 
-    I.e., Hamiltonian Path check (a path that traverses all vertices exactly once).
+    I.e., the existence of a Hamiltonian Path
     """
-    in_degree = defaultdict(int)
+    in_degree: dict[int, int] = defaultdict(int)
     for u in graph:
         for v in graph[u]:
             in_degree[v] += 1
 
     tmp = filterfalse(in_degree.__getitem__, graph)
-    u = next(tmp, None)
-    if next(tmp, None):
+    cur = next(tmp, None)
+    if next(tmp, None) is not None:
         return False
     for _ in range(len(graph) - 1):
-        if not u:
+        if cur is None:
             return False
         next_u = None
-        for v in graph[u]:
+        for v in graph[cur]:
             in_degree[v] -= 1
             if not in_degree[v]:
-                if next_u:
+                if next_u is not None:
                     return False
                 next_u = v
-        u = next_u
+        cur = next_u
 
     return True
