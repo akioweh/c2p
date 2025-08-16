@@ -1,7 +1,36 @@
 from collections import defaultdict, deque
-# from sys import setrecursionlimit
 
-# setrecursionlimit(700000)
+
+# note: radix sort is too heavy here and tl's
+
+
+def radix_sort(keys: list[list[int]]) -> list[int]:
+    n = len(keys)
+    if not n:
+        return []
+    d = max(len(k) for k in keys)
+    b = max(max(k, default=0) for k in keys) + 1
+    buckets: list[list[int]] = [[] for _ in range(b)]
+    short: list[int] = []
+
+    idxs = list(range(n))
+    for digit in range(1, d + 1):
+        for bucket in buckets:
+            bucket.clear()
+        short.clear()
+
+        for i in idxs:
+            k = keys[i]
+            if len(k) < digit:
+                short.append(i)
+            else:
+                buckets[k[-digit]].append(i)
+
+        idxs = short.copy()
+        for bucket in buckets:
+            idxs.extend(bucket)
+
+    return idxs
 
 
 def iso(graph: list[list[int]], roots: list[int]) -> bool:
@@ -43,7 +72,8 @@ def iso(graph: list[list[int]], roots: list[int]) -> bool:
         for u in prev_lvl:
             children[par[u]].append(v_hash[u])
         # re-hash
-        cur_lvl.sort(key=children.__getitem__)  # children's sortedness is inherited from cur_lvl
+        si = radix_sort(list(children[v] for v in cur_lvl))
+        cur_lvl[:] = [cur_lvl[i] for i in si]
         idx = 0
         prev = children[cur_lvl[0]]
         for v in cur_lvl:
