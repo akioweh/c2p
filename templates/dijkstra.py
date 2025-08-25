@@ -1,40 +1,43 @@
+"""
+Standard Single-source Shortest Path
+"""
+
 from heapq import heappush, heappop
 
 
-def dijkstra(graph: dict[int, list[tuple[int, float]]], start: int) -> list[float]:
-    n = len(graph)
-    dist: list[float] = [float('inf')] * n
-    dist[start] = 0
-    heap: list[tuple[float, int]] = [(0, start)]
-    while heap:
-        d, u = heappop(heap)
-        if d > dist[u]:
+def dijkstra(graph: list[list[tuple[int, float]]], src: int) -> list[float]:
+    """O((V + E) log V), no negative weights."""
+    N = len(graph)
+    dist: list[float] = [float('inf')] * N
+    dist[src] = 0
+    pq: list[tuple[float, int]] = [(0, src)]
+    while pq:
+        d, u = heappop(pq)
+        if d != dist[u]:
             continue
         for v, w in graph[u]:
-            if d + w < dist[v]:
-                dist[v] = d + w
-                heappush(heap, (dist[v], v))
+            if (nd := d + w) < dist[v]:
+                dist[v] = nd
+                heappush(pq, (nd, v))
     return dist
 
 
-def dijkstra_2dmtx(grid: list[list[float]], start: tuple[int, int]) -> list[list[float]]:
-    m, n = len(grid), len(grid[0])
-    dist = [
-        [float('inf')] * n
-        for _ in range(m)
-    ]
-    dist[start[0]][start[1]] = 0
-    heap: list[tuple[float, tuple[int, int]]] = [(0, start)]
-    while heap:
-        d, (i, j) = heappop(heap)
-        if d > dist[i][j]:
+def dijkstra_2dmtx(grid: list[list[float]], src: tuple[int, int]) -> list[list[float]]:
+    M, N = len(grid), len(grid[0])
+    dist = [[float('inf')] * N for _ in range(M)]
+    dist[src[0]][src[1]] = 0
+    pq: list[tuple[float, tuple[int, int]]] = [(0, src)]
+    dirs = ((0, 1), (0, -1), (1, 0), (-1, 0))
+    while pq:
+        d, (i, j) = heappop(pq)
+        if d != dist[i][j]:
             continue
-        for di, dj in ((0, 1), (0, -1), (1, 0), (-1, 0)):
-            k, l = i + di, j + dj
-            if not (0 <= k < m and 0 <= l < n):
+        for di, dj in dirs:
+            ni, nj = i + di, j + dj
+            if not (0 <= ni < M and 0 <= nj < N):
                 continue
-            w = grid[k][l]
-            if d + w < dist[k][l]:
-                dist[k][l] = d + w
-                heappush(heap, (dist[k][l], (k, l)))
+            w = grid[ni][nj]
+            if (nd := d + w) < dist[ni][nj]:
+                dist[ni][nj] = nd
+                heappush(pq, (nd, (ni, nj)))
     return dist
