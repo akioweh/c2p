@@ -5,19 +5,19 @@ Tree Isomorphism
 from collections import deque, defaultdict
 
 
-def iso(graph: list[list[int]], roots: list[int]) -> bool:
+def ahu_multi(graph: list[list[int]], roots: list[int]) -> bool:
     """Checks if all trees in the forest ``graph``
-    rooted at ``roots`` are isomorphic to each other.
+    rooted at ``roots`` are co-isomorphic.
 
     Graph is assumed to be undirected (every edge has a back edge).
 
     O(V log V) AHU algorithm.
-    O(V) if cur_lvl sort uses radix sort (but can be slower in practice).
+    O(V) if cur_lvl sort uses radix sort (but is slower in practice).
     """
     n = len(graph)
     lvl = [-1] * n
-    levels: list[list[int]] = []
     par = [-1] * n
+    levels: list[list[int]] = []
 
     def calc_height(_r: int) -> int:
         q = deque([_r])
